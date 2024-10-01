@@ -3,7 +3,7 @@ console.log("JS is Running...");
 async function recentEpisodes() {
   try {
     // Fetch recent added anime from the server
-    let response = await fetch("http://localhost:3000/anime/zoro/top-airing");
+    let response = await fetch("https://anyplay.vercel.app/anime/zoro/top-airing");
     let data = await response.json();
     console.log(data)
     // Selecting the animelist container

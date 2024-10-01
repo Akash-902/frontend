@@ -1,5 +1,5 @@
 // Base URL for Zoro API route
-const baseUrl = 'http://localhost:3000/anime/gogoanime/';
+const baseUrl = 'https://anyplay.vercel.app/anime/gogoanime/';
 
 // Search button event listener
 document.getElementById('search-btn').addEventListener('click', async () => {

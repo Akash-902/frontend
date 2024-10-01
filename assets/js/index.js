@@ -6,7 +6,7 @@ let hasNextPage = true;
 
 async function recentEpisodes(page = 1) {
   try {
-    let response = await fetch(`https://anyplay.vercel.app//anime/gogoanime/recent-episodes?page=${page}`);
+    let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}`);
     let data = await response.json();
     
     console.log(data);

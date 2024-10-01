@@ -101,7 +101,7 @@ console.log("Anime ID:", id);
 // Function to fetch anime info
 async function fetchAnimeInfo(animeId) {
     try {
-        const response = await fetch(`http://localhost:3000/anime/gogoanime/info/${animeId}`);
+        const response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/info/${animeId}`);
         if (!response.ok) {
             console.error("Error fetching anime info:", response.statusText);
             return null; // Return null if the request fails
@@ -182,7 +182,7 @@ fetchAnimeInfo(id).then(animeInfo => {
 // Function to fetch video data remains the same
 async function fetchVideoData(id) {
     try {
-        const response = await fetch(`http://localhost:3000/anime/gogoanime/watch/${id}`);
+        const response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/watch/${id}`);
         const data = await response.json();
         console.log("Fetched Video Data:", data);
 
@@ -237,7 +237,7 @@ function playVideo(sourceUrl, isM3U8) {
 // Function to fetch server data
 async function fetchServerData(id) {
     try {
-        const response = await fetch(`http://localhost:3000/anime/gogoanime/servers/${id}`);
+        const response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/servers/${id}`);
         const servers = await response.json();
         console.log("Fetched Servers Data:", servers);
         displayServers(servers);
