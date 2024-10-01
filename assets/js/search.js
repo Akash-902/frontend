@@ -50,7 +50,7 @@ function displayAnimeResults(animeList) {
     animeItem.innerHTML = `
       <div anime-id="${anime.id}">
         <img src="${anime.image}" alt="${anime.title}">
-        <h2>${anime.title}</h2>
+        <h4>${anime.title}</h4>
         <p>Type: ${anime.subOrDub}</p>
         <p> Release Date: ${anime.releaseDate}</p>
       </div>

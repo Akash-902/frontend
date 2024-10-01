@@ -13,7 +13,7 @@ console.log("info ID:", infoid);
 async function animeInfo() {
     try {
         // Fetch anime info from the server
-        let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/info/${infoid}`);
+        let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/info/naruto-dub`);
         let data = await response.json();
         console.log(data);
 
@@ -28,18 +28,21 @@ async function animeInfo() {
             // Create anime detail structure
             const animeDetail = `
                 <div class="anime-detail">
-                    <h2>${data.title}</h2>
-                    <img src="${data.image}" alt="${data.title}">
-                    <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
-                    <p><strong>Release Date:</strong> ${data.releaseDate || 'N/A'}</p>
-                    <p><strong>Status:</strong> ${data.status || 'N/A'}</p>
-                    <p><strong>Genres:</strong> ${data.genres.join(', ') || 'N/A'}</p>
-                    <p><strong>Total Episodes:</strong> ${data.totalEpisodes || 'N/A'}</p>
-                    <p><strong>Sub or Dub:</strong> ${data.subOrDub || 'N/A'}</p>
-
+                <div class="anime-image">
+                <img src="${data.image}" alt="${data.title}">
+                </div>
+                <div class="anime-information"
+                <p><strong>Name:</strong>${data.title}</p>
+                <p><strong>Genres:</strong> ${data.genres.join(', ') || 'N/A'}</p>
+                <p><strong>Status:</strong> ${data.status || 'N/A'}</p>
+                <p><strong>Total Episodes:</strong> ${data.totalEpisodes || 'N/A'}</p>
+                <p><strong>Sub or Dub:</strong> ${data.subOrDub || 'N/A'}</p>
+                <p><strong>Release Date:</strong> ${data.releaseDate || 'N/A'}</p>
+                </div>
+                </div>
+                <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
                     <h3>Episodes</h3>
                     <ul id="episodeList"></ul>
-                </div>
             `;
 
             // Append the anime detail to the page

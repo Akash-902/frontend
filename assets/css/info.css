@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.anime-info {
+    /* margin: 1rem 0; */
+    padding: .5rem;
+    box-sizing: border-box;
+}
+
+.anime-image  img {
+    object-fit: cover;
+    border-radius: .5rem;
+}
+
+.anime-detail {
+    display: flex;
+    /* justify-content: space-between; */
+    column-gap: .5rem;
+}
+
+.anime-information {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: start;
+    font-size: 1em;
+}
+
