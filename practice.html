@@ -1,0 +1,125 @@
+ <!-- console.log("JS is Running..."); 
+
+// Function to get query parameters from the URL
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+// Get the episode id from the URL
+const episodeId = getQueryParam('id');
+console.log("Episode ID:", episodeId);
+
+// Function to fetch video data from the server
+async function fetchVideoData(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/anime/gogoanime/watch/${id}`);
+    const data = await response.json();
+    console.log("Fetched Video Data:", data);
+
+    // Check if the data contains sources
+    if (data && data.sources && data.sources.length > 0) {
+      // Choose the highest quality source (for example, 1080p)
+      const highestQualitySource = data.sources.find(source => source.quality === "1080p") || data.sources[0];
+      playVideo(highestQualitySource.url, highestQualitySource.isM3U8);
+    } else {
+      console.error("No video data found for this episode.");
+    }
+  } catch (error) {
+    console.error("Error fetching video data:", error);
+  }
+}
+
+// Function to play video based on source type
+function playVideo(sourceUrl, isM3U8) {
+  const videoPlayer = document.getElementById('videoPlayer');
+  
+  // Remove any existing source
+  while (videoPlayer.firstChild) {
+    videoPlayer.removeChild(videoPlayer.firstChild);
+  }
+
+  if (isM3U8) {
+    // Use HLS.js for playing .m3u8 streams
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(sourceUrl);
+      hls.attachMedia(videoPlayer);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        videoPlayer.play();
+      });
+    } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+      // For Safari browsers that support HLS natively
+      videoPlayer.src = sourceUrl;
+      videoPlayer.addEventListener('loadedmetadata', function() {
+        videoPlayer.play();
+      });
+    }
+  } else {
+    // Set MP4 source for non-HLS files
+    const sourceElement = document.createElement('source');
+    sourceElement.src = sourceUrl;
+    sourceElement.type = 'video/mp4';
+    videoPlayer.appendChild(sourceElement);
+    videoPlayer.load(); // Load the new source into the player
+    videoPlayer.play(); // Start playing the video
+  }
+}
+
+// Function to fetch server data
+async function fetchServerData(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/anime/gogoanime/servers/${id}`);
+    const servers = await response.json();
+    console.log("Fetched Servers Data:", servers);
+    // Optionally, you can update your UI with the server options here
+    displayServers(servers);
+  } catch (error) {
+    console.error("Error fetching server data:", error);
+  }
+}
+
+// Function to display available servers
+function displayServers(servers) {
+  const serverContainer = document.getElementById('serverList');
+  serverContainer.innerHTML = ''; // Clear existing servers
+
+  servers.forEach(server => {
+    const serverLink = document.createElement('a');
+    serverLink.href = server.url;
+    serverLink.target = '_blank'; // Open in a new tab
+    serverLink.textContent = server.name;
+    serverContainer.appendChild(serverLink);
+    serverContainer.appendChild(document.createElement('br')); // Add line break
+  });
+}
+
+// Fetch video data and server data for the episode
+fetchVideoData(episodeId);
+fetchServerData(episodeId);
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+</head>
+<body>
+    <video id="videoPlayer" width="600" controls>
+        <source src="" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div id="serverList">
+        Server links will be dynamically inserted here 
+    </div>
+      
+      <script src="assets/js/video.js"></script>
+</body>
+</html> -->

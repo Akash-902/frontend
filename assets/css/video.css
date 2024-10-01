@@ -1,0 +1,65 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    
+    margin: 0;
+}
+
+.video-container {
+    position: relative;
+    max-width: 100%;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    top: 0;
+}
+
+.video {
+    width: 100%;
+    display: block;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: white;
+}
+
+button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+input[type="range"] {
+    width: 30%;
+}
+
+.settings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings select {
+    background-color: #fff;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+#fullscreenBtn {
+    font-size: 20px;
+    cursor: pointer;
+}
