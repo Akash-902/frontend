@@ -1,66 +1,185 @@
-console.log("JS is Running...");
-
+// Initialize the current page and variables
 let currentPage = 1;
-const itemsPerPage = 20;
 let hasNextPage = true;
 
-async function recentEpisodes(page = 1) {
+// Add event listeners to the tabs
+document.getElementById("subbedTab").addEventListener("click", () => {
+  switchTab("subbed");
+  subEpisodes(1); // Load recent episodes data
+});
+
+document.getElementById("dubbedTab").addEventListener("click", () => {
+  switchTab("dubbed");
+  dubEpisodes(1); // Load trending anime data
+});
+
+document.getElementById("chinesTab").addEventListener("click", () => {
+  switchTab("chines");
+  chineseEpisodes(1); // Load anime movies data
+});
+
+// Function to switch tabs and manage active class
+function switchTab(tab) {
+  document.querySelectorAll(".tab").forEach((tabElement) => {
+    tabElement.classList.remove("active"); // Remove 'active' class from all tabs
+  });
+  document.getElementById(`${tab}Tab`).classList.add("active"); // Add 'active' class to the clicked tab
+
+  // Clear anime list and pagination
+  document.getElementById("animelist").innerHTML = "";
+  document.getElementById("pagination").innerHTML = "";
+}
+
+// Function to cache data in localStorage
+function cacheData(key, data) {
+  const cacheObject = {
+    data: data,
+    timestamp: new Date().getTime() // Store current timestamp
+  };
+  localStorage.setItem(key, JSON.stringify(cacheObject));
+}
+
+// Function to get cached data from localStorage
+function getCachedData(key, maxAgeInMinutes) {
+  const cachedItem = localStorage.getItem(key);
+  if (cachedItem) {
+    const parsedCache = JSON.parse(cachedItem);
+    const cacheAge = (new Date().getTime() - parsedCache.timestamp) / (1000 * 60); // Age in minutes
+    if (cacheAge < maxAgeInMinutes) {
+      return parsedCache.data;
+    } else {
+      localStorage.removeItem(key); // Cache is stale, remove it
+    }
+  }
+  return null;
+}
+
+// Function to fetch recent episodes data (with caching)
+async function subEpisodes(page = 1) {
+  const cacheKey = `subEpisodes_page_${page}`;
+  const cachedData = getCachedData(cacheKey, 5); // Cache valid for 10 minutes
+
+  if (cachedData) {
+    console.log("Using cached sub episodes data");
+    displayAnimeList(cachedData);
+    currentPage = parseInt(cachedData.currentPage);
+    hasNextPage = cachedData.hasNextPage;
+    updatePaginationControls();
+    return;
+  }
+
+  try {
+    let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}&type=1`);
+    let data = await response.json();
+    console.log(data)
+    
+    displayAnimeList(data);
+    currentPage = parseInt(data.currentPage);
+    hasNextPage = data.hasNextPage;
+    updatePaginationControls();
+
+    cacheData(cacheKey, data); // Cache the fetched data
+  } catch (error) {
+    console.error("Error fetching sub episodes:", error);
+    document.getElementById("animelist").innerHTML = "<p>Error fetching sub episodes. Please try again later.</p>";
+  }
+}
+
+// Function to fetch trending anime data (with caching)
+async function dubEpisodes(page = 1) {
+  const cacheKey = `dubEpisodes_page_${page}`;
+  const cachedData = getCachedData(cacheKey, 5); // Cache valid for 10 minutes
+
+  if (cachedData) {
+    console.log("Using cached dub anime data");
+    displayAnimeList(cachedData);
+    currentPage = parseInt(cachedData.currentPage);
+    hasNextPage = cachedData.hasNextPage;
+    updatePaginationControls();
+    return;
+  }
+
   try {
     let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}&type=2`);
     let data = await response.json();
     
-    console.log(data);
-
+    displayAnimeList(data);
     currentPage = parseInt(data.currentPage);
     hasNextPage = data.hasNextPage;
+    updatePaginationControls();
 
-    const animelist = document.getElementById("animelist");
-    animelist.innerHTML = "";
-
-    if (data && data.results && data.results.length > 0) {
-      data.results.forEach(anime => {
-        const animeItem = document.createElement("div");
-        animeItem.classList.add("anime-item");
-
-        animeItem.innerHTML = `
-          <div data-episode-id="${anime.episodeId}">
-            <div class="image">
-              <img src="${anime.image}" alt="${anime.title}">
-              <div class="lang">
-                <div class="sub">
-                  <span>${anime.sub || 'N/A'}</span>
-                </div>
-                <div class="dub">
-                  <span>${anime.dub || 'N/A'}</span>
-                </div>
-              </div>
-              <div class="duration">${anime.duration || 'N/A'}</div>
-            </div>
-            <div class="title">${anime.title}</div>
-          </div>
-        `;
-
-        animelist.appendChild(animeItem);
-
-        animeItem.addEventListener('click', () => {
-          const Id = anime.id;
-          const episodeId = anime.episodeId;
-          window.location.href = `video.html?id=${Id}&episodeId=${episodeId}`;
-        });
-      });
-
-      updatePaginationControls();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    } else {
-      animelist.innerHTML = "<p>No recent anime added.</p>";
-    }
+    cacheData(cacheKey, data); // Cache the fetched data
   } catch (error) {
-    console.error("Error fetching anime data:", error);
-    document.getElementById("animelist").innerHTML = "<p>Error fetching recent anime. Please try again later.</p>";
+    console.error("Error fetching dub anime:", error);
+    document.getElementById("animelist").innerHTML = "<p>Error fetching dub anime. Please try again later.</p>";
   }
 }
 
+// Function to fetch anime movies data (with caching)
+async function chineseEpisodes(page = 1) {
+  const cacheKey = `chineseEpisodes_page_${page}`;
+  const cachedData = getCachedData(cacheKey, 5); // Cache valid for 10 minutes
+
+  if (cachedData) {
+    console.log("Using cached chinese anime data");
+    displayAnimeList(cachedData);
+    currentPage = parseInt(cachedData.currentPage);
+    hasNextPage = cachedData.hasNextPage;
+    updatePaginationControls();
+    return;
+  }
+
+  try {
+    let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}&type=3`);
+    let data = await response.json();
+    
+    displayAnimeList(data);
+    currentPage = parseInt(data.currentPage);
+    hasNextPage = data.hasNextPage;
+    updatePaginationControls();
+
+    cacheData(cacheKey, data); // Cache the fetched data
+  } catch (error) {
+    console.error("Error fetching chinese anime:", error);
+    document.getElementById("animelist").innerHTML = "<p>Error fetching chinese anime. Please try again later.</p>";
+  }
+}
+
+// Function to display anime list in the DOM
+function displayAnimeList(data) {
+  const animelist = document.getElementById("animelist");
+  animelist.innerHTML = ""; // Clear previous list
+
+  if (data && data.results && data.results.length > 0) {
+    data.results.forEach(anime => {
+      const animeItem = document.createElement("div");
+      animeItem.classList.add("anime-item");
+
+      animeItem.innerHTML = `
+        <div data-episode-id="${anime.episodeId}">
+          <div class="image">
+            <img src="${anime.image}" alt="${anime.title}"></div>
+          <div class="title">${anime.title}  ${anime.episodeNumber}</div>
+        </div>
+      `;
+
+      animelist.appendChild(animeItem);
+
+      animeItem.addEventListener('click', () => {
+        const Id = anime.id;
+        const episodeId = anime.episodeId;
+        window.location.href = `video.html?id=${Id}&episodeId=${episodeId}`;
+      });
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } else {
+    animelist.innerHTML = "<p>No anime found.</p>";
+  }
+}
+
+// Function to update pagination controls
 function updatePaginationControls() {
   const pagination = document.getElementById("pagination");
   pagination.innerHTML = '';
@@ -70,9 +189,6 @@ function updatePaginationControls() {
   prevButton.disabled = currentPage === 1;
   prevButton.addEventListener('click', () => loadPage(currentPage - 1));
   pagination.appendChild(prevButton);
-
-  const page1 = createPageButton(1);
-  pagination.appendChild(page1);
 
   if (currentPage > 1) {
     const prevPage = createPageButton(currentPage - 1);
@@ -95,20 +211,51 @@ function updatePaginationControls() {
   pagination.appendChild(nextButton);
 }
 
+// Function to create page button
 function createPageButton(page) {
   const pageButton = document.createElement("button");
   pageButton.textContent = page;
   pageButton.classList.add('page-button');
-
   pageButton.addEventListener('click', () => loadPage(page));
-
   return pageButton;
 }
 
+// Function to load the desired page
 function loadPage(page) {
-  if (page > 0 && page !== currentPage) {
-    recentEpisodes(page);
+  if (page > 0) {
+    const activeTab = document.querySelector(".tab.active").id.replace("Tab", "");
+    if (activeTab === "subbed") {
+      subEpisodes(page);
+    } else if (activeTab === "dubbed") {
+      subEpisodes(page);
+    } else if (activeTab === "chines") {
+      chineseEpisodes(page);
+    }
   }
 }
 
-recentEpisodes(currentPage);
+// Automatically refresh API data every 10 minutes
+setInterval(() => {
+  const activeTab = document.querySelector(".tab.active").id.replace("Tab", "");
+  if (activeTab === "subbed") {
+    subEpisodes(1);
+  } else if (activeTab === "dubbed") {
+    s
+    dubEpisodes(1);
+  } else if (activeTab === "chines") {
+    chineseEpisodes(1);
+  }
+}, 5 * 60 * 1000); // 10 minutes
+
+// Auto-fetch data on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const activeTab = document.querySelector(".tab.active").id.replace("Tab", "");
+  
+  if (activeTab === "subbed") {
+    subEpisodes(1);
+  } else if (activeTab === "dubbed") {
+    dubEpisodes(1);
+  } else if (activeTab === "chines") {
+    chineseEpisodes(1);
+  }
+});
