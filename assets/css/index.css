@@ -298,3 +298,15 @@ header > .logo {
     cursor: not-allowed;
   }
   
+
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: #f0f0f0;
+  }
+  
+  .tab.active {
+    background-color: #007BFF;
+    color: white;
+  }
