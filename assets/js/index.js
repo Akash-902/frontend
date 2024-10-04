@@ -71,7 +71,7 @@ async function subEpisodes(page = 1) {
   try {
     let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}&type=1`);
     let data = await response.json();
-    console.log(data)
+    console.log(data);
     
     displayAnimeList(data);
     currentPage = parseInt(data.currentPage);
@@ -168,6 +168,11 @@ function displayAnimeList(data) {
       animeItem.addEventListener('click', () => {
         const Id = anime.id;
         const episodeId = anime.episodeId;
+
+        // Store current page and active tab in localStorage before navigation
+        localStorage.setItem('lastVisitedPage', currentPage);
+        localStorage.setItem('lastActiveTab', document.querySelector('.tab.active').id);
+
         window.location.href = `video.html?id=${Id}&episodeId=${episodeId}`;
       });
     });
@@ -184,26 +189,35 @@ function updatePaginationControls() {
   const pagination = document.getElementById("pagination");
   pagination.innerHTML = '';
 
+  // Always display the 'Prev' button
   const prevButton = document.createElement("button");
   prevButton.textContent = 'Prev';
   prevButton.disabled = currentPage === 1;
   prevButton.addEventListener('click', () => loadPage(currentPage - 1));
   pagination.appendChild(prevButton);
 
+  // Always display the first page number (Page 1)
+  const firstPageButton = createPageButton(1);
+  if (currentPage === 1) {
+    firstPageButton.classList.add('active');
+  }
+  pagination.appendChild(firstPageButton);
+
+  // Display middle page (currentPage) and next page if applicable
   if (currentPage > 1) {
-    const prevPage = createPageButton(currentPage - 1);
-    pagination.appendChild(prevPage);
+    // If we're not on the first page, show the current page
+    const currentPageButton = createPageButton(currentPage);
+    currentPageButton.classList.add('active');
+    pagination.appendChild(currentPageButton);
   }
 
-  const currentPageButton = createPageButton(currentPage);
-  currentPageButton.classList.add('active');
-  pagination.appendChild(currentPageButton);
-
-  if (hasNextPage) {
-    const nextPage = createPageButton(currentPage + 1);
-    pagination.appendChild(nextPage);
+  if (hasNextPage && currentPage + 1 > 1) {
+    // Display the next page after the current page
+    const nextPageButton = createPageButton(currentPage + 1);
+    pagination.appendChild(nextPageButton);
   }
 
+  // Always display the 'Next' button
   const nextButton = document.createElement("button");
   nextButton.textContent = 'Next';
   nextButton.disabled = !hasNextPage;
@@ -224,10 +238,25 @@ function createPageButton(page) {
 function loadPage(page) {
   if (page > 0) {
     const activeTab = document.querySelector(".tab.active").id.replace("Tab", "");
+    currentPage = page; // Update the current page
     if (activeTab === "subbed") {
       subEpisodes(page);
     } else if (activeTab === "dubbed") {
+      dubEpisodes(page);
+    } else if (activeTab === "chines") {
+      chineseEpisodes(page);
+    }
+  }
+}
+
+// Function to load the desired page
+function loadPage(page) {
+  if (page > 0) {
+    const activeTab = document.querySelector(".tab.active").id.replace("Tab", "");
+    if (activeTab === "subbed") {
       subEpisodes(page);
+    } else if (activeTab === "dubbed") {
+      dubEpisodes(page);
     } else if (activeTab === "chines") {
       chineseEpisodes(page);
     }
@@ -240,22 +269,48 @@ setInterval(() => {
   if (activeTab === "subbed") {
     subEpisodes(1);
   } else if (activeTab === "dubbed") {
-    s
     dubEpisodes(1);
   } else if (activeTab === "chines") {
     chineseEpisodes(1);
   }
 }, 5 * 60 * 1000); // 10 minutes
 
-// Auto-fetch data on page load
+// Detect back button navigation and handle refresh cache clearing
 document.addEventListener("DOMContentLoaded", () => {
-  const activeTab = document.querySelector(".tab.active").id.replace("Tab", "");
-  
-  if (activeTab === "subbed") {
-    subEpisodes(1);
-  } else if (activeTab === "dubbed") {
-    dubEpisodes(1);
-  } else if (activeTab === "chines") {
-    chineseEpisodes(1);
+  // Detect page reload
+  if (performance.navigation.type === 1) {
+    // Clear the cache for the current tab and page
+    localStorage.removeItem('subEpisodes_page_1');
+    localStorage.removeItem('dubEpisodes_page_1');
+    localStorage.removeItem('chineseEpisodes_page_1');
+    localStorage.removeItem('lastVisitedPage');
+    localStorage.removeItem('lastActiveTab');
+
+    // Load the default first page and fetch new data
+    subEpisodes(1); // Default to subbed tab and first page
+    switchTab('subbed');
+  } else {
+    // Check if there's a last visited page and tab stored (returning from video.html)
+    const lastVisitedPage = localStorage.getItem('lastVisitedPage');
+    const lastActiveTab = localStorage.getItem('lastActiveTab');
+
+    if (lastVisitedPage && lastActiveTab) {
+      // Restore the active tab and page
+      switchTab(lastActiveTab.replace('Tab', ''));
+      
+      // Load the page from where the user left off
+      if (lastActiveTab === "subbedTab") {
+        subEpisodes(parseInt(lastVisitedPage));
+      } else if (lastActiveTab === "dubbedTab") {
+        dubEpisodes(parseInt(lastVisitedPage));
+      } else if (lastActiveTab === "chinesTab") {
+        chineseEpisodes(parseInt(lastVisitedPage));
+      }
+    } else {
+      // Default behavior if there's no stored info
+      subEpisodes(1); // Default to subbed tab and first page
+      switchTab('subbed');
+    }
   }
 });
+
