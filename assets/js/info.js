@@ -13,7 +13,7 @@ console.log("info ID:", infoid);
 async function animeInfo() {
     try {
         // Fetch anime info from the server
-        let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/info/naruto-dub`);
+        let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/info/${infoid}`);
         let data = await response.json();
         console.log(data);
 

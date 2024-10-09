@@ -1,64 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Video Player</title>
-    <link rel="stylesheet" href="assets/css/video.css">
-    <!-- Add the Hls.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="assets/css/player.css">
+  <link rel="stylesheet" href="assets/css/video.css" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <title>Anime Video Player</title>
 </head>
+
 <body>
-    <div class="video-container">
-        <video id="videoPlayer" class="video">
-            <source src="" type="video/mp4">
-            Your browser does not support the video tag.
+  <section>
+    <div class="container">
+      <!-- Video Player -->
+      <div class="video_player">
+        <video  preload="none" class="main-video">
+          <!-- Video sources will be dynamically added here -->
         </video>
-        
-        <div class="controls">
-            <button id="playPauseBtn">►</button>
-            <input type="range" id="progressBar" value="0">
-            <span id="currentTime">00:00</span> / 
-            <span id="duration">00:00</span>
-
-            <div class="settings">
-                <div class="quality">
-                    <label for="quality">Quality:</label>
-                    <select id="quality">
-                        <option value="1080p">1080p</option>
-                        <option value="720p">720p</option>
-                        <option value="480p">480p</option>
-                        <option value="360p">360p</option>
-                    </select>
-                </div>
-                <div class="speed">
-                    <label for="speed">Speed:</label>
-                    <select id="speed">
-                        <option value="1">Normal</option>
-                        <option value="1.5">1.5x</option>
-                        <option value="2">2x</option>
-                    </select>
-                </div>
-            </div>
-
-            <button id="fullscreenBtn">⛶</button>
-        </div>
+      </div>
     </div>
 
-    <div id="animeInfo"></div>
+  </section>
+  <section>
+    <!-- Anime Info Section -->
+    <div class="anime-info">
+      <!-- Anime title, description, and image will be inserted dynamically -->
+    </div>
+    <div class="button-container">
+      <div class="download-container">
 
-    <!-- Button to toggle between sub and dub -->
-    <button id="subDubButton">Sub</button>
-  </div>
-  <div id="episodeContainer">
-    <h2>Episodes</h2>
-    <ul id="episodeList"></ul> <!-- This is the container where episodes will be displayed -->
-</div>
+      </div>
+    </div>
+  </section>
+  <section>
 
-  <div id="serverContainer"></div>
-    
-    <div id="loadingIndicator" style="display: none;">Loading...</div> <!-- Loading Indicator -->
+    <!-- Episode List Section -->
+    <div class="subdub-container"></div>
+    <div class="episode-list-container">
+      <h3>Episodes</h3>
+      <ul class="episode-list">
+        <!-- Episode list will be inserted dynamically -->
+      </ul>
+      <div class="pagination"></div>
 
-    <script src="assets/js/video.js"></script>
+    </div>
+  </section>
+
+
+  <script src="assets/js/video.js"></script>
+  <script src="assets/js/player.js"></script>
+
 </body>
+
 </html>

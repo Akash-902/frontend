@@ -60,7 +60,7 @@ async function subEpisodes(page = 1) {
   const cachedData = getCachedData(cacheKey, 5); // Cache valid for 10 minutes
 
   if (cachedData) {
-    console.log("Using cached sub episodes data");
+    console.log("Using cached sub episodes data",);
     displayAnimeList(cachedData);
     currentPage = parseInt(cachedData.currentPage);
     hasNextPage = cachedData.hasNextPage;
@@ -102,6 +102,7 @@ async function dubEpisodes(page = 1) {
   try {
     let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}&type=2`);
     let data = await response.json();
+    console.log(data);
     
     displayAnimeList(data);
     currentPage = parseInt(data.currentPage);
@@ -132,6 +133,7 @@ async function chineseEpisodes(page = 1) {
   try {
     let response = await fetch(`https://anyplay.vercel.app/anime/gogoanime/recent-episodes?page=${page}&type=3`);
     let data = await response.json();
+    console.log(data);
     
     displayAnimeList(data);
     currentPage = parseInt(data.currentPage);
@@ -159,7 +161,7 @@ function displayAnimeList(data) {
         <div data-episode-id="${anime.episodeId}">
           <div class="image">
             <img src="${anime.image}" alt="${anime.title}"></div>
-          <div class="title">${anime.title}  ${anime.episodeNumber}</div>
+          <div class="title">${anime.episodeId}  </div>
         </div>
       `;
 
